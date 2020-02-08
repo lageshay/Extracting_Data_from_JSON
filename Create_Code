@@ -1,0 +1,38 @@
+import urllib.request, urllib.parse, urllib.error
+import json
+import ssl
+
+#Prompt for a url
+url = input('Enter location: ')
+# If the user does not add a url (<1 character in length), use url below
+if len(url) < 1:
+    url = 'http://py4e-data.dr-chuck.net/comments_276967.json'
+
+print('Retrieving:', url)
+
+# Ignore SSL certificate errors
+ctx = ssl.create_default_context()
+ctx.check_hostname = False
+ctx.verify_mode = ssl.CERT_NONE
+
+#Create the connection and read the JSON data from that URL using urllib
+connection = urllib.request.urlopen(url, context=ctx)
+data = connection.read().decode()
+print('Retrieved', len(data), 'characters')
+
+#Parse and extract the comment counts from the JSON data
+info = json.loads(data)
+
+list = []
+count = 0
+sum = 0
+#Loop through the comments
+for item in info["comments"]:
+    #Compute the sum of the numbers in the ‘comments’ in the file
+    list.append(int(item['count']))
+    count = count + 1
+    sum = sum + (int(item['count']))
+
+#Print the count and sum
+print('Count: ', count)
+print('Sum: ', sum)
